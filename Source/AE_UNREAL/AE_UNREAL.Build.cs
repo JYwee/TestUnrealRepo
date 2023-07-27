@@ -13,7 +13,7 @@ public class AE_UNREAL : ModuleRules
 
         // 빌드 세팅을 할수가 있으며 그중 기본 #include 볼더도 지정해줄수 있다.
 
-        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
+        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "AIModule" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
