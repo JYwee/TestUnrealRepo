@@ -18,7 +18,7 @@ void AMonster::BeginPlay()
 		CurMonsterData = Inst->GetMonsterData(DataName);
 
 		SetAllAnimation(CurMonsterData->MapAnimation);
-		SetAniState(AIState::DEATH);
+		SetAniState(AIState::IDLE);
 	}
 
 	
@@ -33,7 +33,9 @@ void AMonster::BeginPlay()
 	//
 	mSpawnPosition = GetActorLocation();
 	GetBlackboardComponent()->SetValueAsVector(TEXT("SpawnLocation"), mSpawnPosition);
+	GetBlackboardComponent()->SetValueAsInt(TEXT("HP_Monster"), mHealthPoint);
 
+	GetGlobalAnimInstance()->OnMontageBlendingOut.AddDynamic(this, &AMonster::MontageEnd);
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AMonster::BeginOverLap);
 }
 
@@ -45,14 +47,38 @@ void AMonster::BeginOverLap(
 	bool bFromSweep,
 	const FHitResult& SweepResult)
 {
-	if (OtherActor->ActorHasTag(TEXT("FireBall")))
+	if (OtherComp->ComponentHasTag(TEXT("FireBall")))
 	{
-		GetBehaviorTree()->SetStateChange(GetBehaviorTree(), AIState::DEATH);
-		this->Destroy();
+		//mHealthPoint = GetBlackboardComponent()->GetValueAsInt(TEXT("HP_Monster"));
+		mHealthPoint -= 150;
+		GetBlackboardComponent()->SetValueAsInt(TEXT("HP_Monster"), mHealthPoint);
+		UE_LOG(LogTemp, Warning, TEXT("%S(%u)> if %d %d"), __FUNCTION__, __LINE__, mHealthPoint, GetBlackboardComponent()->GetValueAsInt(TEXT("HP_Monster")));
+
+		OtherActor->Destroy();
+
+		//GetController()
+		//GetBehaviorTree()->SetStateChange(, AIState::DEATH);
+		//this->Destroy();
 	}
 	if (OtherComp->ComponentHasTag(TEXT("WeaponMesh")))
 	{
-		GetBehaviorTree()->SetStateChange(GetBehaviorTree(), AIState::DEATH);
+		//mHealthPoint = GetBlackboardComponent()->GetValueAsInt(TEXT("HP_Monster"));
+		mHealthPoint -= 130;
+		GetBlackboardComponent()->SetValueAsInt(TEXT("HP_Monster"), mHealthPoint);
+		UE_LOG(LogTemp, Warning, TEXT("%S(%u)> if %d %d"), __FUNCTION__, __LINE__, mHealthPoint, GetBlackboardComponent()->GetValueAsInt(TEXT("HP_Monster")));
+		//GetBehaviorTree()->SetStateChange(GetBehaviorTree(), AIState::DEATH);
+		//this->Destroy();
+	}
+}
+
+void AMonster::MontageEnd(UAnimMontage* Anim, bool _Inter)
+{
+	TSubclassOf<UAnimInstance> Inst = AMonster::StaticClass();
+
+	// Anim 종료된 몽타주
+	if (Anim == GetAnimMontage(AIState::DEATH))
+	{
 		this->Destroy();
 	}
+
 }

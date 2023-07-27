@@ -10,7 +10,8 @@ AProjectTile::AProjectTile()
 	PrimaryActorTick.bCanEverTick = true;
 
 	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
-	SphereComponent->SetupAttachment(RootComponent);
+	//SphereComponent->SetupAttachment(RootComponent);
+	SetRootComponent(SphereComponent);
 	SphereComponent->SetCollisionProfileName(TEXT("NoCollision"), true);
 }
 

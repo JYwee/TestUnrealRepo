@@ -48,4 +48,11 @@ private:
 	UPROPERTY(Category = "Monster", EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 		FVector mSpawnPosition;
 
+	UPROPERTY(Category = "Monster", EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+		int mHealthPoint = 100;
+
+	UFUNCTION()
+		void MontageEnd(UAnimMontage* Anim, bool _Inter);
+
+
 };

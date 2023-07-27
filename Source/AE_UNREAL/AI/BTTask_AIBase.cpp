@@ -131,6 +131,19 @@ void UBTTask_AIBase::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemo
 	float StateTime = BlockBoard->GetValueAsFloat(TEXT("StateTime"));
 	StateTime += DelataSeconds;
 	BlockBoard->SetValueAsFloat(TEXT("StateTime"), StateTime);
+
+
+	int monsterHP = BlockBoard->GetValueAsInt(TEXT("HP_Monster"));
+	UE_LOG(LogTemp, Log, TEXT("%S(%u)> if %d, %d"), __FUNCTION__, __LINE__, monsterHP,
+		static_cast<int>(GetAiState(OwnerComp)));
+	if(monsterHP <= 0)
+	{
+		UE_LOG(LogTemp, Error, TEXT("%S(%u)> if %d, %d"), __FUNCTION__, __LINE__, monsterHP,
+			static_cast<int>(GetAiState(OwnerComp)));
+		SetStateChange(OwnerComp, AIState::DEATH);
+		return;
+	}
+		
 }
 
 
