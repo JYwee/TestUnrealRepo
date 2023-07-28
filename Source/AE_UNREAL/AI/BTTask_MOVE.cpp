@@ -92,7 +92,7 @@ void UBTTask_MOVE::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory
 
 		if (SearchRange < Dir.Size())
 		{
-			// 원재 라리로 돌아가고
+			// 원재 자리로 돌아가고
 			SetStateChange(OwnerComp, AIState::RETURN);
 			//SetStateChange(OwnerComp, AIState::IDLE);
 			return;
@@ -109,15 +109,16 @@ void UBTTask_MOVE::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory
 
 	{
 		FVector firstLocation = GetBlackboardComponent(OwnerComp)->GetValueAsVector(TEXT("SpawnLocation"));
-
+		float SearchRange = GetBlackboardComponent(OwnerComp)->GetValueAsFloat(TEXT("SearchRange"));
 		FVector ThisPos = GetGlobalCharacter(OwnerComp)->GetActorLocation();
 		// 혹시라도 z축이 있을 가능성을 없애는게 보통입니다.
 		firstLocation.Z = 0.0f;
 		ThisPos.Z = 0.0f;
 
+		// 0. searchrange 1.5 만큼 멀어지면 제자리 귀환
 
 		FVector Dir = firstLocation - ThisPos;
-		if (Dir.Size() > 2000.f)
+		if (Dir.Size() > SearchRange * 1.5f)
 		{
 			SetStateChange(OwnerComp, AIState::RETURN);
 			return;

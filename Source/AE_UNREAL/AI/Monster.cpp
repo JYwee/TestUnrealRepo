@@ -4,6 +4,7 @@
 #include "AI/Monster.h"
 #include <Global/GlobalGameInstance.h>
 #include <Global/Data/MonsterData.h>
+#include <AI/AIPlayerCharacter.h>
 #include "Components/CapsuleComponent.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
@@ -52,7 +53,7 @@ void AMonster::BeginOverLap(
 		//mHealthPoint = GetBlackboardComponent()->GetValueAsInt(TEXT("HP_Monster"));
 		mHealthPoint -= 150;
 		GetBlackboardComponent()->SetValueAsInt(TEXT("HP_Monster"), mHealthPoint);
-		UE_LOG(LogTemp, Warning, TEXT("%S(%u)> if %d %d"), __FUNCTION__, __LINE__, mHealthPoint, GetBlackboardComponent()->GetValueAsInt(TEXT("HP_Monster")));
+		//UE_LOG(LogTemp, Warning, TEXT("%S(%u)> if %d %d"), __FUNCTION__, __LINE__, mHealthPoint, GetBlackboardComponent()->GetValueAsInt(TEXT("HP_Monster")));
 
 		OtherActor->Destroy();
 
@@ -62,10 +63,24 @@ void AMonster::BeginOverLap(
 	}
 	if (OtherComp->ComponentHasTag(TEXT("WeaponMesh")))
 	{
+		AAIPlayerCharacter* myCharacter = Cast<AAIPlayerCharacter>(OtherComp->GetAttachmentRootActor());
+
+		if (myCharacter == nullptr && myCharacter->IsValidLowLevel() == false)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("%S(%u)> AAIPlayerCharacter* myCharacter is wrong"), __FUNCTION__, __LINE__ );
+			return;
+		}
+
+		if (AIAniState::Attack != myCharacter->GetAniState<AIAniState>())
+		{
+			UE_LOG(LogTemp, Warning, TEXT("%S(%u)> myCharacter isnt playing Attack"), __FUNCTION__, __LINE__);
+			return;
+		}
+		//OtherComp->GetAttachmentRootActor();
 		//mHealthPoint = GetBlackboardComponent()->GetValueAsInt(TEXT("HP_Monster"));
 		mHealthPoint -= 130;
 		GetBlackboardComponent()->SetValueAsInt(TEXT("HP_Monster"), mHealthPoint);
-		UE_LOG(LogTemp, Warning, TEXT("%S(%u)> if %d %d"), __FUNCTION__, __LINE__, mHealthPoint, GetBlackboardComponent()->GetValueAsInt(TEXT("HP_Monster")));
+		//UE_LOG(LogTemp, Warning, TEXT("%S(%u)> if %d %d"), __FUNCTION__, __LINE__, mHealthPoint, GetBlackboardComponent()->GetValueAsInt(TEXT("HP_Monster")));
 		//GetBehaviorTree()->SetStateChange(GetBehaviorTree(), AIState::DEATH);
 		//this->Destroy();
 	}
