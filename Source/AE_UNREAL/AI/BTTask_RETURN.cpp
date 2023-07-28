@@ -41,6 +41,15 @@ void UBTTask_RETURN::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemo
 	
 
 	FVector Dir = firstLocation - ThisPos;
+
+	//UE_LOG(LogTemp, Warning, TEXT("%S(%u)> if %f "), __FUNCTION__, __LINE__, Dir.Size());
+	if (0.1f >= Dir.Size())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%S(%u)> if %f "), __FUNCTION__, __LINE__, Dir.Size());
+		SetStateChange(OwnerComp, AIState::IDLE);
+		return;
+	}
+
 	Dir.Normalize();
 
 	FVector OtherForward = GetGlobalCharacter(OwnerComp)->GetActorForwardVector();
@@ -63,12 +72,8 @@ void UBTTask_RETURN::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemo
 
 	GetGlobalCharacter(OwnerComp)->AddMovementInput(Dir);
 
-	Dir = firstLocation - ThisPos;
-	if (1.0f >= Dir.Size())
-	{
-		SetStateChange(OwnerComp, AIState::IDLE);
-		return;
-	}
+	
+	
 }
 	
 
